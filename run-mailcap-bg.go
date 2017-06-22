@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -106,6 +107,20 @@ func main() {
 		}
 		// Set the new path as argument for the child process
 		os.Args[numArgs-1] = fileNewPath
+
+		// Get the absolute path of this executable
+		cmdPath, err := filepath.Abs(os.Args[0])
+		if err != nil {
+			log.Fatalf("Error resolving path of executable: %v", err)
+		}
+
+		// Create the child process
+		os.Args[0] = "-child" // cmdPath is used in place of Args[0]
+		cmd := exec.Command(cmdPath, os.Args...)
+		err = cmd.Start()
+		if err != nil {
+			log.Fatalf("Command finished with error: %v", err)
+		}
 
 		// Exit sucessfully
 		os.Exit(0)
