@@ -109,7 +109,7 @@ func main() {
 		os.Args[numArgs-1] = fileNewPath
 
 		// Get the absolute path of this executable
-		cmdPath, err := filepath.Abs(os.Args[0])
+		cmdPath := os.Args[0]
 		if err != nil {
 			log.Fatalf("Error resolving path of executable: %v", err)
 		}
