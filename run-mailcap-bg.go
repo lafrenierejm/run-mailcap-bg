@@ -125,6 +125,21 @@ func main() {
 		// Exit sucessfully
 		os.Exit(0)
 	} else {
+		// Args[0] is the name of this executable.
+		// Args[1] is "-child"
+		cmd := exec.Command(os.Args[2], os.Args[3:]...)
+		err := cmd.Run()
+		if err != nil {
+			log.Fatalf("Command finished with error: %v", err)
+		}
+
+		// The last argument was the file which can now be removed.
+		file := os.Args[len(os.Args) - 1]
+		err = os.Remove(file)
+		if err != nil {
+			log.Fatalf("Unable to remove file '%s': %v", file, err)
+		}
+
 		// Exit successfully
 		os.Exit(0)
 	}
