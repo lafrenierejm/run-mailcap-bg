@@ -14,7 +14,7 @@ import (
 // printUsage prints a ussage message for this program to stdout then exits
 // with code 1.
 func printUsage() {
-	fmt.Printf("usage: %s command [command_option] [...] file\n",
+	fmt.Printf("usage: %s view_command [command_option] [...] file\n",
 		os.Args[0])
 	os.Exit(1)
 }
