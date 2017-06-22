@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"time"
 )
@@ -43,6 +44,34 @@ func timestampName(path string) string {
 	return filepath.Base(path) + "_" + curTime
 }
 
+// Author: markc (https://stackoverflow.com/a/21067803)
+//
+// copyFileContents copies the contents src to dst. dst will be created if it
+// does not already exist. If dst does exist it will be replaced by the
+// contents of src.
+func copyFileContents(src, dst string) (err error) {
+	in, err := os.Open(src)
+	if err != nil {
+		return
+	}
+	defer in.Close()
+	out, err := os.Create(dst)
+	if err != nil {
+		return
+	}
+	defer func() {
+		cerr := out.Close()
+		if err == nil {
+			err = cerr
+		}
+	}()
+	if _, err = io.Copy(out, in); err != nil {
+		return
+	}
+	err = out.Sync()
+	return
+}
+
 func main() {
 	const suffix = "run-mailcap-bg"
 
@@ -68,6 +97,15 @@ func main() {
 		// Create a timestamped copy of the file in dir
 		fileOldPath := os.Args[numArgs - 1]
 		fileNewPath := filepath.Join(dir, timestampName(fileOldPath))
+
+		// Copy contents of fileOrigPath to fileNewPath
+		err = copyFileContents(fileOldPath, fileNewPath)
+		if err != nil {
+			log.Fatalf("Error copying '%s' to '%s': %v",
+				fileOldPath, fileNewPath, err)
+		}
+		// Set the new path as argument for the child process
+		os.Args[numArgs-1] = fileNewPath
 
 		// Exit sucessfully
 		os.Exit(0)
