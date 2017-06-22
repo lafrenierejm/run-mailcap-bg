@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 // printUsage prints a ussage message for this program to stdout then exits
@@ -33,6 +34,15 @@ func getRuntimeDir(program string) string {
 	return dir
 }
 
+// timestampName returns the base name of path with the current time in ISO
+// 8601 format appended to it.
+func timestampName(path string) string {
+	// Get the current time in ISO 8601 format
+	curTime := time.Now().Format("2006-01-02T15:04:05")
+	// Append that to the end of path's base name
+	return filepath.Base(path) + "_" + curTime
+}
+
 func main() {
 	const suffix = "run-mailcap-bg"
 
@@ -54,6 +64,10 @@ func main() {
 		if err != nil {
 			log.Fatalf("Could not create directory '%s': %v", dir, err)
 		}
+
+		// Create a timestamped copy of the file in dir
+		fileOldPath := os.Args[numArgs - 1]
+		fileNewPath := filepath.Join(dir, timestampName(fileOldPath))
 
 		// Exit sucessfully
 		os.Exit(0)
