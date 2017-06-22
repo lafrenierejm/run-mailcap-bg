@@ -96,7 +96,7 @@ func main() {
 		}
 
 		// Create a timestamped copy of the file in dir
-		fileOldPath := os.Args[numArgs - 1]
+		fileOldPath := os.Args[numArgs-1]
 		fileNewPath := filepath.Join(dir, timestampName(fileOldPath))
 
 		// Copy contents of fileOrigPath to fileNewPath
@@ -134,7 +134,7 @@ func main() {
 		}
 
 		// The last argument was the file which can now be removed.
-		file := os.Args[len(os.Args) - 1]
+		file := os.Args[len(os.Args)-1]
 		err = os.Remove(file)
 		if err != nil {
 			log.Fatalf("Unable to remove file '%s': %v", file, err)
